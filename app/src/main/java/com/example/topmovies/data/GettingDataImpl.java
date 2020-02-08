@@ -5,14 +5,21 @@ import com.example.topmovies.domain.model.Movie;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 
 public class GettingDataImpl implements GettingData {
     public ArrayList<Movie> movies;
-    private ParsingResponse parsingResponse = new ParsingResponse();
 
-    GettingDataImpl() throws IOException {
-        this.movies = parsingResponse.getMovies();
+    public GettingDataImpl() throws IOException, InterruptedException {
+        synchronized (this) {
+            ParsingResponse parsingResponse = new ParsingResponse();
+            movies = parsingResponse.getMovies();
+
+            System.out.println(".........");
+            System.out.println(movies);
+        }
     }
 
     @Override
@@ -27,8 +34,7 @@ public class GettingDataImpl implements GettingData {
 
     @Override
     public String getDate(Movie movie) {
-        assert movie.getRelease() != null;
-        return movie.getRelease().toString();
+        return movie.getRelease();
     }
 
     @Override

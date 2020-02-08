@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import java.util.Date;
 
+
 public class Movie {
     @Nullable
     private Integer id;
@@ -16,7 +17,7 @@ public class Movie {
     private String overview;
 
     @Nullable
-    private Date release;
+    private String release;
 
     @Nullable
     private String posterUrl;
@@ -25,9 +26,15 @@ public class Movie {
     private Integer vote;
 
     public Movie() {
+        this.id = -1;
+        this.title = "title";
+        this.overview = "overview";
+        this.release = null;
+        this.posterUrl = "posterUrl";
+        this.vote = 0;
     }
 
-    public Movie(@Nullable Integer id, @Nullable String title, @Nullable String overview, @Nullable Date release, @Nullable String posterUrl, @Nullable Integer vote) {
+    public Movie(@Nullable Integer id, @Nullable String title, @Nullable String overview, @Nullable String release, @Nullable String posterUrl, @Nullable Integer vote) {
         this.id = id;
         this.title = title;
         this.overview = overview;
@@ -64,11 +71,11 @@ public class Movie {
     }
 
     @Nullable
-    public Date getRelease() {
+    public String getRelease() {
         return release;
     }
 
-    public void setRelease(@Nullable Date release) {
+    public void setRelease(@Nullable String release) {
         this.release = release;
     }
 
@@ -88,5 +95,9 @@ public class Movie {
 
     public void setVote(@Nullable Integer vote) {
         this.vote = vote;
+    }
+
+    public String toString(){
+        return id.toString()+title+overview+posterUrl+vote.toString();
     }
 }
