@@ -2,7 +2,6 @@ package com.example.topmovies.data;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 
 import com.example.topmovies.domain.model.Movie;
 import com.google.gson.stream.JsonReader;
@@ -15,20 +14,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class ParsingResponse{
-
+public class ParsingResponseImpl implements com.example.topmovies.domain.ParsingResponse {
     private String apiKey = "d327787b7974ded8a7541baf2274204f";
     private Integer releaseYear = 2019;
     private String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + apiKey +
             "&primary_release_year=" + releaseYear;
     ArrayList<Movie> movies = null;
 
-    public synchronized ArrayList<Movie> getMovies() throws IOException {
+    public ParsingResponseImpl() {
+
+    }
+
+    public synchronized ArrayList<Movie> getMovies() {
                 ArrayList<Movie> newmovies = new ArrayList<>();
                 URL moviesEndpoint = null;
                 try {
@@ -63,7 +63,7 @@ public class ParsingResponse{
                                             String key2 = jsonReader.nextName();
                                             switch (key2) {
                                                 case "poster_path":
-                                                    movie.setPosterUrl(jsonReader.nextString());
+                                                    movie.setPoster(getImage(jsonReader.nextString()));
                                                     break;
                                                 case "id":
                                                     movie.setId(Integer.parseInt(jsonReader.nextString()));
@@ -80,10 +80,8 @@ public class ParsingResponse{
                                                 case "release_date":
                                                     movie.setRelease(jsonReader.nextString());
                                                     try {
-                                                        System.out.println(movie.toString());
                                                         newmovies.add(movie);
                                                         movie = new Movie();
-                                                        System.out.println(newmovies);
                                                     } catch (Exception e) {
                                                         System.out.println(e.toString());
                                                     }
@@ -115,13 +113,11 @@ public class ParsingResponse{
                 myConnection.disconnect();
 
                 movies = newmovies;
-                System.out.println("*******");
-                System.out.println(movies);
         return movies;
     }
 
-    public Bitmap getImage(String poster_url) {
-        String url = "http://image.tmdb.org/t/p/w185/" + poster_url;
+    public synchronized Bitmap getImage(String poster_url) {
+        String url = "https://image.tmdb.org/t/p/w185/" + poster_url;
         Bitmap bitmap = null;
         try {
             URL mURL = new URL(url);

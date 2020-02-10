@@ -1,5 +1,7 @@
 package com.example.topmovies.domain.model;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -20,26 +22,20 @@ public class Movie {
     private String release;
 
     @Nullable
-    private String posterUrl;
+    private Bitmap poster;
 
     @Nullable
     private Integer vote;
 
     public Movie() {
-        this.id = -1;
-        this.title = "title";
-        this.overview = "overview";
-        this.release = null;
-        this.posterUrl = "posterUrl";
-        this.vote = 0;
     }
 
-    public Movie(@Nullable Integer id, @Nullable String title, @Nullable String overview, @Nullable String release, @Nullable String posterUrl, @Nullable Integer vote) {
+    public Movie(@Nullable Integer id, @Nullable String title, @Nullable String overview, @Nullable String release, @Nullable Bitmap poster, @Nullable Integer vote) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.release = release;
-        this.posterUrl = posterUrl;
+        this.poster = poster;
         this.vote = vote;
     }
 
@@ -80,12 +76,12 @@ public class Movie {
     }
 
     @Nullable
-    public String getPosterUrl() {
-        return posterUrl;
+    public Bitmap getPoster() {
+        return poster;
     }
 
-    public void setPosterUrl(@Nullable String posterUrl) {
-        this.posterUrl = posterUrl;
+    public void setPoster(@Nullable Bitmap poster) {
+        this.poster = poster;
     }
 
     @Nullable
@@ -98,6 +94,6 @@ public class Movie {
     }
 
     public String toString(){
-        return id.toString()+title+overview+posterUrl+vote.toString();
+        return id.toString()+title+overview+poster.toString()+vote.toString();
     }
 }
