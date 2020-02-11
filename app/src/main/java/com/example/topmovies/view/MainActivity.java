@@ -1,7 +1,6 @@
 package com.example.topmovies.view;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.topmovies.DiStorage;
 import com.example.topmovies.R;
-import com.example.topmovies.data.ParsingResponseImpl;
 import com.example.topmovies.domain.ParsingResponse;
 import com.example.topmovies.domain.model.Movie;
 
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ParsingResponse parsingResponse;
-    public static final String MOVIE_KEY = "MOVIE_KEY";
     ArrayList<Movie> movies;
 
     @Override
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        parsingResponse = new ParsingResponseImpl();
+        parsingResponse = DiStorage.getInstance().getParsingResponse();
 
         AsyncContent asyncContent = new AsyncContent();
         asyncContent.execute();
@@ -41,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Movie> doInBackground(Void... voids) {
-
             return parsingResponse.getMovies();
         }
 

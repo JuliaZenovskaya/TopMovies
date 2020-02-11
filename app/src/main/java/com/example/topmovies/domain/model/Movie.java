@@ -92,8 +92,4 @@ public class Movie {
     public void setVote(@Nullable Integer vote) {
         this.vote = vote;
     }
-
-    public String toString(){
-        return id.toString()+title+overview+poster.toString()+vote.toString();
-    }
 }

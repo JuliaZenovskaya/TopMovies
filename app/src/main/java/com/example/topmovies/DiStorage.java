@@ -1,7 +1,4 @@
 package com.example.topmovies;
-
-import android.content.Context;
-
 import com.example.topmovies.data.ParsingResponseImpl;
 import com.example.topmovies.domain.ParsingResponse;
 
@@ -23,6 +20,6 @@ public class DiStorage {
     }
 
     public ParsingResponse getParsingResponse() {
-        return parsingResponse;
+        return this.parsingResponse;
     }
 }
