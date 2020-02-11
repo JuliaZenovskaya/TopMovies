@@ -2,11 +2,7 @@ package com.example.topmovies.domain.model;
 
 import android.graphics.Bitmap;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.Date;
-
 
 public class Movie {
     @Nullable

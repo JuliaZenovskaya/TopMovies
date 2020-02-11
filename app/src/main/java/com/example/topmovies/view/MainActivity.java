@@ -42,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
             return parsingResponse.getMovies();
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
             movies = result;
             if (movies != null) {
                 for (final Movie i : movies) {
-                    final View v = getLayoutInflater().inflate(R.layout.movie, null);
+                    @SuppressLint("InflateParams") final View v = getLayoutInflater().inflate(R.layout.movie, null);
                     TextView title = v.findViewById(R.id.title);
                     TextView release = v.findViewById(R.id.release);
                     TextView overview = v.findViewById(R.id.overview);
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     Button more = v.findViewById(R.id.more_info);
 
                     title.setText(i.getTitle());
+                    assert i.getVote() != null;
                     vote.setText("\n" + i.getVote().toString() + "%");
                     release.setText(i.getRelease());
                     overview.setText(i.getOverview());

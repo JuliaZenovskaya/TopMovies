@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -25,12 +26,7 @@ public class ParsingResponseImpl implements com.example.topmovies.domain.Parsing
     private ArrayList<Movie> movies = new ArrayList<>();
     private int counter = 0;
 
-    public ParsingResponseImpl() {
-
-    }
-
     public ArrayList<Movie> getMovies() {
-        ArrayList<Movie> newmovies = new ArrayList<>();
         URL moviesEndpoint = null;
         try {
             moviesEndpoint = new URL(url);
@@ -40,64 +36,63 @@ public class ParsingResponseImpl implements com.example.topmovies.domain.Parsing
         HttpsURLConnection myConnection =
                 null;
         try {
+            assert moviesEndpoint != null;
             myConnection = (HttpsURLConnection) moviesEndpoint.openConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
+            assert myConnection != null;
             if (myConnection.getResponseCode() == 200) {
                 InputStream responseBody = myConnection.getInputStream();
                 InputStreamReader responseBodyReader =
-                        new InputStreamReader(responseBody, "UTF-8");
+                        new InputStreamReader(responseBody, StandardCharsets.UTF_8);
                 JsonReader jsonReader = new JsonReader(responseBodyReader);
                 jsonReader.beginObject();
                 while (jsonReader.hasNext()) {
                     String key = jsonReader.nextName();
-                    switch (key) {
-                        case "results":
-                            jsonReader.beginArray();
-                            Movie movie = new Movie();
+                    if ("results".equals(key)) {
+                        jsonReader.beginArray();
+                        Movie movie = new Movie();
+                        while (jsonReader.hasNext()) {
+                            jsonReader.beginObject();
                             while (jsonReader.hasNext()) {
-                                jsonReader.beginObject();
-                                while (jsonReader.hasNext()) {
-                                    String key2 = jsonReader.nextName();
-                                    switch (key2) {
-                                        case "poster_path":
-                                            movie.setPoster(getImage(jsonReader.nextString()));
-                                            movie = countSettedFields(movie);
-                                            break;
-                                        case "id":
-                                            movie.setId(Integer.parseInt(jsonReader.nextString()));
-                                            movie = countSettedFields(movie);
-                                            break;
-                                        case "title":
-                                            movie.setTitle(jsonReader.nextString());
-                                            movie = countSettedFields(movie);
-                                            break;
-                                        case "vote_average":
-                                            movie.setVote(Math.round(Float.parseFloat(jsonReader.nextString()) * 10));
-                                            movie = countSettedFields(movie);
-                                            break;
-                                        case "overview":
-                                            movie.setOverview(jsonReader.nextString());
-                                            movie = countSettedFields(movie);
-                                            break;
-                                        case "release_date":
-                                            movie.setRelease(jsonReader.nextString());
-                                            movie = countSettedFields(movie);
-                                            break;
-                                        default:
-                                            jsonReader.skipValue();
-                                            break;
-                                    }
+                                String key2 = jsonReader.nextName();
+                                switch (key2) {
+                                    case "poster_path":
+                                        movie.setPoster(getImage(jsonReader.nextString()));
+                                        movie = countSettedFields(movie);
+                                        break;
+                                    case "id":
+                                        movie.setId(Integer.parseInt(jsonReader.nextString()));
+                                        movie = countSettedFields(movie);
+                                        break;
+                                    case "title":
+                                        movie.setTitle(jsonReader.nextString());
+                                        movie = countSettedFields(movie);
+                                        break;
+                                    case "vote_average":
+                                        movie.setVote(Math.round(Float.parseFloat(jsonReader.nextString()) * 10));
+                                        movie = countSettedFields(movie);
+                                        break;
+                                    case "overview":
+                                        movie.setOverview(jsonReader.nextString());
+                                        movie = countSettedFields(movie);
+                                        break;
+                                    case "release_date":
+                                        movie.setRelease(jsonReader.nextString());
+                                        movie = countSettedFields(movie);
+                                        break;
+                                    default:
+                                        jsonReader.skipValue();
+                                        break;
                                 }
-                                jsonReader.endObject();
                             }
-                            jsonReader.endArray();
-                            break;
-                        default:
-                            jsonReader.skipValue();
-                            break;
+                            jsonReader.endObject();
+                        }
+                        jsonReader.endArray();
+                    } else {
+                        jsonReader.skipValue();
                     }
                 }
                 jsonReader.close();
