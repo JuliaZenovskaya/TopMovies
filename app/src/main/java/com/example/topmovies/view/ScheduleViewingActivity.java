@@ -84,35 +84,47 @@ public class ScheduleViewingActivity extends AppCompatActivity {
                 calendar.set(mYear, mMonth, mDay, mHour, mMinute);
                 long time = calendar.getTimeInMillis();
 
-                NotificationManager notificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "My channel",
-                            NotificationManager.IMPORTANCE_HIGH);
-                    channel.setDescription("Shedule viewing movies");
-                    channel.enableLights(true);
-                    channel.setLightColor(Color.RED);
-                    channel.enableVibration(false);
-                    notificationManager.createNotificationChannel(channel);
-                }
-                NotificationCompat.Builder builder =
-                        new NotificationCompat.Builder(ScheduleViewingActivity.this, CHANNEL_ID)
-                                .setSmallIcon(R.mipmap.ic_launcher)
-                                .setContentTitle("Top Movies")
-                                .setContentText("It's time to watch " + movie)
-                                .setPriority(NotificationCompat.PRIORITY_MAX)
-                                .setWhen(time);
+                Timer timer = new Timer();
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        makeShedule();
+                    }
+                };
+                timer.schedule(timerTask, (time - Calendar.getInstance().getTimeInMillis()));
 
-                NotificationManagerCompat notificationManagerCompat =
-                        NotificationManagerCompat.from(ScheduleViewingActivity.this);
-                notificationManagerCompat.notify(NOTIFY_ID, builder.build());
-                System.out.println(notificationManagerCompat.getNotificationChannels()) ;
-
-
+                System.out.println(time - Calendar.getInstance().getTimeInMillis());
                 Intent intent = new Intent(ScheduleViewingActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
+    }
+
+    public void makeShedule(){
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "My channel",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("Shedule viewing movies");
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(false);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+        }
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(ScheduleViewingActivity.this, CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Top Movies")
+                        .setContentText("It's time to watch " + movie)
+                        .setPriority(NotificationCompat.PRIORITY_MAX);
+
+        NotificationManagerCompat notificationManagerCompat =
+                NotificationManagerCompat.from(ScheduleViewingActivity.this);
+        notificationManagerCompat.notify(NOTIFY_ID, builder.build());
+        System.out.println(notificationManagerCompat.getNotificationChannels()) ;
     }
 }
